@@ -1,0 +1,50 @@
+{
+  "build": {
+    "core": "stm32",
+    "cpu": "cortex-m4",
+    "extra_flags": "-DSTM32F427xx",
+    "f_cpu": "180000000L",
+    "mcu": "stm32f427vit6",
+    "product_line": "STM32F427xx",
+    "variant": "stm32f4"
+  },
+  "debug": {
+    "default_tools": [
+      "sdk11m_ftdi"
+    ],
+    "onboard_tools": [
+      "sdk11m_ftdi"
+    ],
+    "svd_path": "STM32F427x.svd",
+    "tools": {
+      "sdk11m_ftdi": {
+        "default": true,
+        "onboard": true,
+        "server": {
+          "arguments": [
+            "-s",
+            "$PACKAGE_DIR/openocd/scripts",
+            "-f",
+            "$PROJECT_DIR/openocd/sdk11m_427.cfg"
+          ],
+          "executable": "bin/openocd",
+          "package": "tool-openocd"
+        }
+      }
+    }
+  },
+  "frameworks": [
+    "stm32cube"
+  ],
+  "name": "SDK-1.1M.427",
+  "upload": {
+    "maximum_ram_size": 262144,
+    "maximum_size": 2097152,
+    "protocol": "sdk11m_ftdi",
+    "protocols": [
+      "sdk11m_ftdi"
+    ]
+  },
+  "url": "https://github.com/lmtspbru/SDK-1.1M",
+  "vendor": "LMT"
+}
