@@ -1,10 +1,11 @@
 #include "drivers/button.h"
 
 #include "stm32f4xx_hal.h"
+#include "drivers/gpio.h"
 
 /* nBTN has an external 3 kohm pull-up and is grounded when pressed. */
 #define BUTTON_GPIO_PORT GPIOC
-#define BUTTON_GPIO_PIN GPIO_PIN_15
+#define BUTTON_GPIO_PIN GPIO_DRIVER_PIN(15)
 
 static bool stable_pressed;
 static bool candidate_pressed;
@@ -14,20 +15,16 @@ static uint32_t candidate_since_ms;
 
 static bool Button_ReadRaw(void)
 {
-    return HAL_GPIO_ReadPin(BUTTON_GPIO_PORT, BUTTON_GPIO_PIN) == GPIO_PIN_RESET;
+    return Gpio_Read(BUTTON_GPIO_PORT, BUTTON_GPIO_PIN) == 0U;
 }
 
 void Button_Init(void)
 {
-    GPIO_InitTypeDef gpio = {0};
-
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-
-    gpio.Pin = BUTTON_GPIO_PIN;
-    gpio.Mode = GPIO_MODE_INPUT;
-    gpio.Pull = GPIO_NOPULL;
-    gpio.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(BUTTON_GPIO_PORT, &gpio);
+    const GpioConfig gpio = {
+        GPIO_MODE_IN, GPIO_PUSH_PULL, GPIO_PULL_NONE, GPIO_DRIVER_SPEED_LOW, 0U
+    };
+    (void)Gpio_EnableClock(BUTTON_GPIO_PORT);
+    (void)Gpio_Configure(BUTTON_GPIO_PORT, BUTTON_GPIO_PIN, &gpio, 0U);
 
     stable_pressed = Button_ReadRaw();
     candidate_pressed = stable_pressed;
